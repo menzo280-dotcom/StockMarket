@@ -14,7 +14,9 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "tb_portfolio")
 public class Portfolio implements Serializable {
-	
+
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 
