@@ -2,6 +2,7 @@ package com.enzomartins.stockmarket.entities;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,9 +18,12 @@ public class Stock implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
+	
+	@Column(nullable = false, unique = true)
 	private String code;
+	
 	private String companyName;
+	@Column(nullable = false)
 	private Double currentPrice;
 	
 	public Stock() {
