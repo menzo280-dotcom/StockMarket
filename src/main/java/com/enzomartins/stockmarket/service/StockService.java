@@ -7,6 +7,7 @@ import com.enzomartins.stockmarket.service.exception.ResourceNotFoundException;
 import com.enzomartins.stockmarket.entities.Stock;
 import com.enzomartins.stockmarket.repository.StockRepository;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -43,6 +44,17 @@ public class StockService {
 	        }
 	        
 	        return repository.save(obj);
+	 }
+	 
+	 public Stock update(Long id, Stock obj) {
+		Stock entity = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(id));
+		if (obj.getCurrentPrice() == null || obj.getCurrentPrice() <= 0) {
+			throw new IllegalArgumentException("price must be greater than 0");
+		}
+		entity.setCode(obj.getCode());
+		entity.setCurrentPrice(obj.getCurrentPrice());
+		return repository.save(entity);
 	 }
 
 }
