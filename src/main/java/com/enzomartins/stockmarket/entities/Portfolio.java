@@ -100,8 +100,6 @@ public class Portfolio implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
 
 }
 

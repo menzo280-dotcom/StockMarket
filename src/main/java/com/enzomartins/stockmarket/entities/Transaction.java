@@ -1,6 +1,7 @@
 package com.enzomartins.stockmarket.entities;
 
 import java.io.Serializable;
+
 import java.time.LocalDateTime;
 
 import com.enzomartins.stockmarket.entities.enums.TransactionType;
@@ -26,13 +27,22 @@ public class Transaction implements Serializable {
 	private Long id;
 
 	private LocalDateTime moment;
-	private String stockCode;
+	
+	@ManyToOne
+	@JoinColumn(name = "stock_id")
+	private Stock stock;
+	
+	@ManyToOne
+	@JoinColumn(name = "portfolio_id")
+	private Portfolio portfolio;
+	
+	
 	private Integer quantity;
 	private Double price;
 	
-@ManyToOne
-@JoinColumn(name = "user_id")
-	private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+		private User user;
 	
 	@Enumerated(EnumType.STRING)
 	private TransactionType type;
@@ -41,12 +51,12 @@ public class Transaction implements Serializable {
 	public Transaction() {
 		
 	}
-	public Transaction(Long id, LocalDateTime moment, String stockCode, Integer quantity, Double price,
+	public Transaction(Long id, LocalDateTime moment, Stock stock, Integer quantity, Double price,
 			TransactionType type, User user) {
 		super();
 		this.id = id;
 		this.moment = moment;
-		this.stockCode = stockCode;
+		this.stock = stock;
 		this.quantity = quantity;
 		this.price = price;
 		this.type = type;
@@ -64,11 +74,11 @@ public class Transaction implements Serializable {
 	public void setMoment(LocalDateTime moment) {
 		this.moment = moment;
 	}
-	public String getStockCode() {
-		return stockCode;
+	public Stock getStock() {
+		return stock;
 	}
-	public void setStockCode(String stockCode) {
-		this.stockCode = stockCode;
+	public void setStock(Stock stock) {
+		this.stock = stock;
 	}
 	public Integer getQuantity() {
 		return quantity;
@@ -99,6 +109,14 @@ public class Transaction implements Serializable {
 	    return quantity * price;
 	}
 	
+	public Portfolio getPortfolio() {
+	    return portfolio;
+	}
+
+	public void setPortfolio(Portfolio portfolio) {
+	    this.portfolio = portfolio;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -122,5 +140,6 @@ public class Transaction implements Serializable {
 			return false;
 		return true;
 	}
+	
 
 }
