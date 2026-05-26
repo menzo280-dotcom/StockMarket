@@ -2,11 +2,15 @@ package com.enzomartins.stockmarket.service;
 
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.enzomartins.stockmarket.dto.PortfolioPositionDTO;
 import com.enzomartins.stockmarket.entities.Portfolio;
 import com.enzomartins.stockmarket.entities.Stock;
 import com.enzomartins.stockmarket.entities.Transaction;
@@ -95,6 +99,41 @@ public class TransactionService {
 
 	public Transaction findById(Long id) {
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+	}
+	
+	public List<PortfolioPositionDTO> getPositions(Long portfolioId) {
+		
+		Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow((() ->  new ResourceNotFoundException(portfolioId)));
+		
+		List<Transaction> transactions = repository.findByPortfolio(portfolio);
+		
+		
+		Map<Stock, Integer> position = new HashMap<>();
+		
+		for (Transaction t : transactions) {
+			Stock stock = t.getStock();
+			Integer currentQuantity = position.getOrDefault(stock, 0);
+			
+			if (t.getType() == TransactionType.BUY) {
+				position.put(stock, currentQuantity + t.getQuantity());
+			} else {
+				position.put(stock, currentQuantity - t.getQuantity());
+			}
+		}
+		
+		List<PortfolioPositionDTO> result = new ArrayList<>();
+		
+		for (Map.Entry<Stock, Integer> entry : position.entrySet()) {
+		    Stock stock = entry.getKey();
+		    Integer quantity = entry.getValue();
+
+		    if (quantity > 0) {
+		        PortfolioPositionDTO dto = new PortfolioPositionDTO(stock.getCode(),stock.getCompanyName(),quantity,stock.getCurrentPrice(), quantity * stock.getCurrentPrice());
+		        result.add(dto);
+		    }
+		}
+
+		return result;
 	}
 
 		

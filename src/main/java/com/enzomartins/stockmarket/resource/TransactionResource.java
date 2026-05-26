@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.enzomartins.stockmarket.service.TransactionService;
+import com.enzomartins.stockmarket.dto.PortfolioPositionDTO;
 import com.enzomartins.stockmarket.dto.TransactionRequestDTO;
 import com.enzomartins.stockmarket.entities.Transaction;
 
@@ -50,6 +51,15 @@ public class TransactionResource {
 	    Transaction transaction = service.sellStock(dto.getPortfolioId(),dto.getStockId(), dto.getQuantity());
 	        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(transaction.getId()).toUri();
 	    return ResponseEntity.created(uri).body(transaction);
+	}
+	
+	@GetMapping("/portfolio/{portfolioId}")
+	public ResponseEntity<List<PortfolioPositionDTO>> getPositions(
+	        @PathVariable Long portfolioId) {
+
+	    List<PortfolioPositionDTO> positions = service.getPositions(portfolioId);
+
+	    return ResponseEntity.ok().body(positions);
 	}
 	
 
