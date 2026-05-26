@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.enzomartins.stockmarket.service.TransactionService;
 import com.enzomartins.stockmarket.dto.PortfolioPositionDTO;
+import com.enzomartins.stockmarket.dto.PortfolioSummaryDTO;
 import com.enzomartins.stockmarket.dto.TransactionRequestDTO;
 import com.enzomartins.stockmarket.entities.Transaction;
 
@@ -60,6 +61,26 @@ public class TransactionResource {
 	    List<PortfolioPositionDTO> positions = service.getPositions(portfolioId);
 
 	    return ResponseEntity.ok().body(positions);
+	}
+	
+	@GetMapping("/portfolio/{portfolioId}/summary")
+	public ResponseEntity<PortfolioSummaryDTO>
+	getPortfolioSummary(
+	        @PathVariable Long portfolioId) {
+
+	    PortfolioSummaryDTO summary =
+	            service.getPortfolioSummary(portfolioId);
+
+	    return ResponseEntity.ok().body(summary);
+	}
+	
+	@GetMapping("/portfolio/{portfolioId}/stock/{stockId}")
+	public ResponseEntity<List<Transaction>> findHistoryByStock(
+	        @PathVariable Long portfolioId,
+	        @PathVariable Long stockId) {
+
+	    List<Transaction> list = service.findHistoryByStock(portfolioId, stockId);
+	    return ResponseEntity.ok().body(list);
 	}
 	
 

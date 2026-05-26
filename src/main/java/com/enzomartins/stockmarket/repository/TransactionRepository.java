@@ -12,8 +12,6 @@ import com.enzomartins.stockmarket.entities.Stock;
 public interface TransactionRepository  extends JpaRepository<Transaction, Long> {
 	List<Transaction> findByPortfolio(Portfolio portfolio);
 	
-	List<Transaction> findByPortfolioAndStock(
-		    Portfolio portfolio,
-		    Stock stock
-		);
+	List<Transaction> findByPortfolioAndStock(Portfolio portfolio, Stock stock );
+	
 }

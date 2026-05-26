@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.enzomartins.stockmarket.dto.PortfolioPositionDTO;
+import com.enzomartins.stockmarket.dto.PortfolioSummaryDTO;
 import com.enzomartins.stockmarket.entities.Portfolio;
 import com.enzomartins.stockmarket.entities.Stock;
 import com.enzomartins.stockmarket.entities.Transaction;
@@ -52,6 +53,7 @@ public class TransactionService {
 			
 			return repository.save(transaction);
 			
+			
 	}
 	
 	public Transaction sellStock(Long portfolioId, Long stockId, Integer quantity) {
@@ -64,8 +66,7 @@ public class TransactionService {
 		
 		Transaction transaction = new Transaction();
 		
-		List<Transaction> transactions =
-			    repository.findByPortfolioAndStock(portfolio, stock);
+		List<Transaction> transactions = repository.findByPortfolioAndStock(portfolio, stock);
 		
 		int balance = 0;
 		
@@ -89,8 +90,6 @@ public class TransactionService {
 		transaction.setType(TransactionType.SELL);
 		
 		return repository.save(transaction);
-		
-		
 	}
 
 	public List<Transaction> findAll() {
@@ -102,41 +101,74 @@ public class TransactionService {
 	}
 	
 	public List<PortfolioPositionDTO> getPositions(Long portfolioId) {
-		
-		Portfolio portfolio = portfolioRepository.findById(portfolioId).orElseThrow((() ->  new ResourceNotFoundException(portfolioId)));
-		
-		List<Transaction> transactions = repository.findByPortfolio(portfolio);
-		
-		
-		Map<Stock, Integer> position = new HashMap<>();
-		
-		for (Transaction t : transactions) {
-			Stock stock = t.getStock();
-			Integer currentQuantity = position.getOrDefault(stock, 0);
-			
-			if (t.getType() == TransactionType.BUY) {
-				position.put(stock, currentQuantity + t.getQuantity());
-			} else {
-				position.put(stock, currentQuantity - t.getQuantity());
-			}
-		}
-		
-		List<PortfolioPositionDTO> result = new ArrayList<>();
-		
-		for (Map.Entry<Stock, Integer> entry : position.entrySet()) {
-		    Stock stock = entry.getKey();
-		    Integer quantity = entry.getValue();
 
-		    if (quantity > 0) {
-		        PortfolioPositionDTO dto = new PortfolioPositionDTO(stock.getCode(),stock.getCompanyName(),quantity,stock.getCurrentPrice(), quantity * stock.getCurrentPrice());
-		        result.add(dto);
-		    }
-		}
+	    Portfolio portfolio = portfolioRepository.findById(portfolioId)
+	            .orElseThrow(() -> new ResourceNotFoundException(portfolioId));
 
-		return result;
+	    List<Transaction> transactions = repository.findByPortfolio(portfolio);
+
+	    Map<Stock, Integer> position = new HashMap<>();
+	    Map<Stock, Double> totalCost = new HashMap<>();
+	    
+	    Map<Stock, Integer> totalBoughtQuantity = new HashMap<>();
+		
+	    for (Transaction t : transactions) {
+	        Stock stock = t.getStock();
+
+	        Integer currentQuantity = position.getOrDefault(stock, 0);
+
+	        if (t.getType() == TransactionType.BUY) {
+	            position.put(stock, currentQuantity + t.getQuantity());
+
+	            Double currentCost = totalCost.getOrDefault(stock, 0.0);
+	            totalCost.put(stock, currentCost + t.getTotal());
+
+	            Integer currentBoughtQuantity = totalBoughtQuantity.getOrDefault(stock, 0);
+	            totalBoughtQuantity.put(stock, currentBoughtQuantity + t.getQuantity());
+	        } else {
+	            position.put(stock, currentQuantity - t.getQuantity());
+	        }
+	    }
+
+	    List<PortfolioPositionDTO> result = new ArrayList<>();
+
+	    for (Map.Entry<Stock, Integer> entry : position.entrySet()) {
+	        Stock stock = entry.getKey();
+	        Integer quantity = entry.getValue();
+
+	        if (quantity > 0) {
+	            Double cost = totalCost.getOrDefault(stock, 0.0);
+	            Integer boughtQuantity = totalBoughtQuantity.getOrDefault(stock, 0);
+	            Double averagePrice = cost / boughtQuantity;
+	            Double marketValue = quantity * stock.getCurrentPrice();
+	            Double profitLoss = marketValue - (averagePrice * quantity);
+
+	            PortfolioPositionDTO dto = new PortfolioPositionDTO( stock.getCode(), stock.getCompanyName(), quantity,stock.getCurrentPrice(), marketValue, averagePrice, profitLoss);
+	            result.add(dto);
+	        }
+	    }
+
+	    return result;
+	}
+	public PortfolioSummaryDTO getPortfolioSummary(Long portfolioId) {
+		List<PortfolioPositionDTO> positions = getPositions(portfolioId);
+		Double totalMarketValue = 0.0;
+		 for (PortfolioPositionDTO position : positions) {
+			 totalMarketValue += position.getMarketValue();
+		 }
+		 
+		 return new PortfolioSummaryDTO(portfolioId, totalMarketValue); 
+	}
+	
+	public List<Transaction> findHistoryByStock(Long portfolioId, Long stockId) {
+		
+	    Portfolio portfolio = portfolioRepository.findById(portfolioId)
+	    		.orElseThrow(() -> new ResourceNotFoundException(portfolioId));
+	    Stock stock = stockRepository.findById(stockId)
+	            .orElseThrow(() -> new ResourceNotFoundException(stockId));
+	    return repository.findByPortfolioAndStock(portfolio, stock);
 	}
 
-		
 }
 
 

@@ -7,63 +7,79 @@ public class PortfolioPositionDTO {
 	private Integer quantity;
 	private Double currentPrice;
 	private Double marketValue;
+	private Double averagePrice;
+    private Double profitLoss;
+	
 	
 	public PortfolioPositionDTO() {
 		
 	}
 	
-	
+	 public PortfolioPositionDTO(String stockCode, String companyName, Integer quantity,
+	            Double currentPrice, Double marketValue, Double averagePrice, Double profitLoss) {
+	        this.stockCode = stockCode;
+	        this.companyName = companyName;
+	        this.quantity = quantity;
+	        this.currentPrice = currentPrice;
+	        this.marketValue = marketValue;
+	        this.averagePrice = averagePrice;
+	        this.profitLoss = profitLoss;
+	    }
 
-	public PortfolioPositionDTO(String stockCode, String companyName, Integer quantity, Double currentPrice,
-			Double marketValue) {	
-		this.stockCode = stockCode;
-		this.companyName = companyName;
-		this.quantity = quantity;
-		this.currentPrice = currentPrice;
-		this.marketValue = marketValue;
-	}
+	 public String getStockCode() {
+		 return stockCode;
+	 }
 
+	 public void setStockCode(String stockCode) {
+		 this.stockCode = stockCode;
+	 }
 
+	 public String getCompanyName() {
+		 return companyName;
+	 }
 
-	public String getStockCode() {
-		return stockCode;
-	}
+	 public void setCompanyName(String companyName) {
+		 this.companyName = companyName;
+	 }
 
-	public void setStockCode(String stockCode) {
-		this.stockCode = stockCode;
-	}
+	 public Integer getQuantity() {
+		 return quantity;
+	 }
 
-	public String getCompanyName() {
-		return companyName;
-	}
+	 public void setQuantity(Integer quantity) {
+		 this.quantity = quantity;
+	 }
 
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
-	}
+	 public Double getCurrentPrice() {
+		 return currentPrice;
+	 }
 
-	public Integer getQuantity() {
-		return quantity;
-	}
+	 public void setCurrentPrice(Double currentPrice) {
+		 this.currentPrice = currentPrice;
+	 }
 
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
+	 public Double getMarketValue() {
+		 return marketValue;
+	 }
 
-	public Double getCurrentPrice() {
-		return currentPrice;
-	}
+	 public void setMarketValue(Double marketValue) {
+		 this.marketValue = marketValue;
+	 }
 
-	public void setCurrentPrice(Double currentPrice) {
-		this.currentPrice = currentPrice;
-	}
+	 public Double getAveragePrice() {
+		 return averagePrice;
+	 }
 
-	public Double getMarketValue() {
-		return marketValue;
-	}
+	 public void setAveragePrice(Double averagePrice) {
+		 this.averagePrice = averagePrice;
+	 }
 
-	public void setMarketValue(Double marketValue) {
-		this.marketValue = marketValue;
-	}
+	 public Double getProfitLoss() {
+		 return profitLoss;
+	 }
 
-	
+	 public void setProfitLoss(Double profitLoss) {
+		 this.profitLoss = profitLoss;
+	 }
+
 }
