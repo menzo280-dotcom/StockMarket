@@ -175,6 +175,14 @@ public class TransactionService {
 
 	    return repository.findByPortfolio(portfolio);
 	}
+	
+	public List<Transaction> findHistoryByStockCode(String code) {
+	    if (code == null || code.isBlank()) {
+	        throw new IllegalArgumentException("stock code cannot be null or empty");
+	    }
+
+	    return repository.findByStockCode(code);
+	}
 
 }
 

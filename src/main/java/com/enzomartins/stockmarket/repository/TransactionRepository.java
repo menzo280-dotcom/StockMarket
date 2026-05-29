@@ -14,4 +14,6 @@ public interface TransactionRepository  extends JpaRepository<Transaction, Long>
 	
 	List<Transaction> findByPortfolioAndStock(Portfolio portfolio, Stock stock );
 	
+	List<Transaction> findByStockCode(String code);
+	
 }

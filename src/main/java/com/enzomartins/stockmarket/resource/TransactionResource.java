@@ -91,5 +91,13 @@ public class TransactionResource {
 	    return ResponseEntity.ok().body(list);
 	}
 	
+	@GetMapping("/stock/{code}")
+	public ResponseEntity<List<Transaction>> findHistoryByStockCode(
+	        @PathVariable String code) {
+
+	    List<Transaction> list = service.findHistoryByStockCode(code);
+	    return ResponseEntity.ok().body(list);
+	}
+	
 
 }
