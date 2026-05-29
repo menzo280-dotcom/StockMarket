@@ -168,6 +168,13 @@ public class TransactionService {
 	            .orElseThrow(() -> new ResourceNotFoundException(stockId));
 	    return repository.findByPortfolioAndStock(portfolio, stock);
 	}
+	
+	public List<Transaction> findHistoryByPortfolio(Long portfolioId) {
+	    Portfolio portfolio = portfolioRepository.findById(portfolioId)
+	            .orElseThrow(() -> new ResourceNotFoundException(portfolioId));
+
+	    return repository.findByPortfolio(portfolio);
+	}
 
 }
 

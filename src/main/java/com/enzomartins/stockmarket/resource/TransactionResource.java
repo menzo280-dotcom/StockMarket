@@ -83,5 +83,13 @@ public class TransactionResource {
 	    return ResponseEntity.ok().body(list);
 	}
 	
+	@GetMapping("/portfolio/{portfolioId}/history")
+	public ResponseEntity<List<Transaction>> findHistoryByPortfolio(
+	        @PathVariable Long portfolioId) {
+
+	    List<Transaction> list = service.findHistoryByPortfolio(portfolioId);
+	    return ResponseEntity.ok().body(list);
+	}
+	
 
 }
